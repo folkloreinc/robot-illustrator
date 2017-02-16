@@ -47,6 +47,7 @@ class Illustrator {
         return downloadFile(url)
             .then((imagePath) => {
                 const script = addImage(imagePath, options);
+                console.log(script);
                 return executeScript(script);
             });
     }
