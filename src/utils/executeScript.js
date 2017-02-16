@@ -3,11 +3,11 @@ import osascript from 'node-osascript';
 
 const executeScript = script => (
     new Promise((resolve, reject) => {
-        osascript.execute(script, (err) => {
+        osascript.execute(script, (err, result) => {
             if (err) {
                 return reject(err);
             }
-            return resolve(resolve);
+            return resolve(result);
         });
     })
 );

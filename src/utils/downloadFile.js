@@ -4,7 +4,7 @@ import Promise from 'es6-promise';
 import temp from 'temp';
 
 const downloadFile = url => (
-    new Promise((resolve, reject) => {
+    new Promise((resolve) => {
         const tempName = temp.path({
             suffix: '.png',
         });
