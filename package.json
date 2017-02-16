@@ -1,5 +1,5 @@
 {
-  "name": "illustrator-robot",
+  "name": "robot-illustrator",
   "version": "0.1.0",
   "author": {
     "name": "Folklore",
@@ -14,14 +14,17 @@
   "scripts": {
     "test": "jest",
     "clean:lib": "rm -rf lib/*",
-    "copy:templates": "find src/ -type f | grep -i .scpt$ | sed 's/src\\/\\///g' | xargs -I{} cp -r \"src/{}\" \"lib/{}\"",
+    "copy:scripts": "find src/ -type f | grep -i .scpt$ | sed 's/src\\/\\///g' | xargs -I{} cp -r \"src/{}\" \"lib/{}\"",
     "compile": "babel -d lib/ src/",
-    "build": "npm run clean:lib && npm run compile && npm run copy:templates",
+    "build": "npm run clean:lib && npm run compile && npm run copy:scripts",
     "prepublish": "npm run build",
     "start": "node lib/server",
     "server": "babel-node src/server"
   },
-  "main": "lib/index",
+  "bin": {
+    "robot-illustrator" : "./lib/cli.js"
+  },
+  "main": "lib/index.js",
   "devDependencies": {
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.1.1",

@@ -1,39 +1,15 @@
 import fs from 'fs';
 import path from 'path';
-import http from 'http';
-import Promise from 'es6-promise';
-import temp from 'temp';
-import osascript from 'node-osascript';
+
+// Utils
+import executeScript from './utils/executeScript';
+import downloadFile from './utils/downloadFile';
+
+// Actions
 import createDocument from './actions/createDocument';
 import addImage from './actions/addImage';
 import addText from './actions/addText';
 import move from './actions/move';
-
-const executeScript = script => (
-    new Promise((resolve, reject) => {
-        osascript.execute(script, (err) => {
-            if (err) {
-                return reject(err);
-            }
-            return resolve(resolve);
-        });
-    })
-);
-
-const downloadFile = url => (
-    new Promise((resolve, reject) => {
-        const tempName = temp.path({
-            suffix: '.png',
-        });
-        const file = fs.createWriteStream(tempName);
-        return http.get(url, (response) => {
-            response.pipe(file);
-            response.on('end', () => {
-                resolve(tempName);
-            });
-        });
-    })
-);
 
 class Illustrator {
     static start() {
@@ -46,28 +22,29 @@ class Illustrator {
         return executeScript(script);
     }
 
-    static addImage(url, x, y) {
+    static addImage(url, options) {
         return downloadFile(url)
             .then((imagePath) => {
-                const script = addImage(imagePath, x, y);
+                const script = addImage(imagePath, options);
                 return executeScript(script);
             });
     }
 
-    static addText(text, x, y) {
-        const script = addText(text, x, y);
+    static addText(text, options) {
+        const script = addText(text, options);
         return executeScript(script);
     }
 
-    static move(type, name, x, y) {
+    static move(type, name, x, y, options) {
         let itemType = 'item';
         if (type === 'text') {
             itemType = 'text frame';
-        }
-        if (type === 'image') {
+        } else if (type === 'image') {
+            itemType = 'placed item';
+        } else if (type === 'shape') {
             itemType = 'placed item';
         }
-        const script = move(itemType, name, x, y);
+        const script = move(itemType, name, x, y, options);
         return executeScript(script);
     }
 }
