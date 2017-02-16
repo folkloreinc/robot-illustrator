@@ -1,0 +1,44 @@
+{
+  "name": "illustrator-robot",
+  "version": "0.1.0",
+  "author": {
+    "name": "Folklore",
+    "email": "info@atelierfolklore.ca"
+  },
+  "contributors": [
+    {
+      "name": "David Mongeau-Petitpas",
+      "email": "dmp@atelierfolklore.ca"
+    }
+  ],
+  "scripts": {
+    "test": "jest",
+    "clean:lib": "rm -rf lib/*",
+    "copy:templates": "find src/ -type f | grep -i .scpt$ | sed 's/src\\/\\///g' | xargs -I{} cp -r \"src/{}\" \"lib/{}\"",
+    "compile": "babel -d lib/ src/",
+    "build": "npm run clean:lib && npm run compile && npm run copy:templates",
+    "prepublish": "npm run build",
+    "start": "node lib/server",
+    "server": "babel-node src/server"
+  },
+  "main": "lib/index",
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.3.1",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-react": "^6.23.0",
+    "babel-preset-stage-0": "^6.22.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "commander": "^2.9.0",
+    "ejs": "^2.5.5",
+    "es6-promise": "^4.0.5",
+    "express": "^4.14.1",
+    "kue": "^0.11.5",
+    "node-osascript": "^1.0.4",
+    "temp": "^0.8.3"
+  }
+}
