@@ -1,17 +1,20 @@
 import fs from 'fs';
 import path from 'path';
+import sizeOf from 'image-size';
 
 // Utils
 import executeScript from './utils/executeScript';
-import downloadFile from './utils/downloadFile';
+import downloadImage from './utils/downloadImage';
 import getItemType from './utils/getItemType';
 
 // Actions
 import createDocument from './actions/createDocument';
 import addImage from './actions/addImage';
 import addText from './actions/addText';
+import drawShape from './actions/drawShape';
 import move from './actions/move';
 import resize from './actions/resize';
+import changeColor from './actions/changeColor';
 
 class Illustrator {
 
@@ -31,7 +34,7 @@ class Illustrator {
      * @param height int The height of the document
      * @return Promise
      */
-    static createDocument(width, height) {
+    static createDocument({ width, height }) {
         const script = createDocument(width, height);
         return executeScript(script);
     }
@@ -39,14 +42,25 @@ class Illustrator {
     /**
      * Add an image
      *
-     * @param url string The url fo the image
-     * @param options { x, y, name, document } The options of the image
+     * @param options { url, x, y, name, document, layer } The options of the image
      * @return Promise
      */
-    static addImage(url, options) {
-        return downloadFile(url)
+    static addImage({ url, x, y, width, height, name, document, layer }) {
+        return downloadImage(url)
             .then((imagePath) => {
-                const script = addImage(imagePath, options);
+                let dimensions;
+                if (!width || !height) {
+                    dimensions = sizeOf(imagePath);
+                }
+                const imageWidth = width || dimensions.width;
+                const imageHeight = height || dimensions.height;
+                const script = addImage(imagePath, imageWidth, imageHeight, {
+                    x,
+                    y,
+                    name,
+                    document,
+                    layer,
+                });
                 console.log(script);
                 return executeScript(script);
             });
@@ -55,12 +69,22 @@ class Illustrator {
     /**
      * Add a text
      *
-     * @param text string The url fo the image
-     * @param options { x, y, name, document } The options of the text
+     * @param options { text, x, y, name, document, layer } The options of the text
      * @return Promise
      */
-    static addText(text, options) {
-        const script = addText(text, options);
+    static addText({ text, x, y, name, document, layer }) {
+        const script = addText(text, { x, y, name, document, layer });
+        return executeScript(script);
+    }
+
+    /**
+     * Draw shape
+     *
+     * @param options { shape, x, y, width, height, name, document, layer } The options of the text
+     * @return Promise
+     */
+    static drawShape({ shape, width, height, x, y, color, name, document, layer }) {
+        const script = drawShape(shape, width, height, { x, y, color, name, document, layer });
         return executeScript(script);
     }
 
@@ -74,9 +98,9 @@ class Illustrator {
      * @param options { document } The options of the move
      * @return Promise
      */
-    static move(type, name, x, y, options) {
+    static move({ type, name, x, y, document, layer }) {
         const itemType = getItemType(type);
-        const script = move(itemType, name, x, y, options);
+        const script = move(itemType, name, x, y, { document, layer });
         return executeScript(script);
     }
 
@@ -90,9 +114,25 @@ class Illustrator {
      * @param options { document } The options of the move
      * @return Promise
      */
-    static resize(type, name, width, height, options) {
+    static resize({ type, name, width, height, scale, document, layer }) {
         const itemType = getItemType(type);
-        const script = resize(itemType, name, width, height, options);
+        const script = resize(itemType, name, width, height, { scale, document, layer });
+        return executeScript(script);
+    }
+
+    /**
+     * Change the color
+     *
+     * @param type string The type of the item
+     * @param name string The name of the item
+     * @param width int The new width
+     * @param height int The new height
+     * @param options { document } The options of the move
+     * @return Promise
+     */
+    static changeColor({ type, name, color, document, layer }) {
+        const itemType = getItemType(type);
+        const script = changeColor(itemType, name, color, { document, layer });
         return executeScript(script);
     }
 }

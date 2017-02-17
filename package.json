@@ -36,13 +36,18 @@
   },
   "dependencies": {
     "body-parser": "^1.16.1",
+    "camel-case": "^2.0.0",
     "commander": "^2.9.0",
+    "cors": "^2.8.1",
     "debug": "^2.6.1",
     "ejs": "^2.5.5",
     "es6-promise": "^4.0.5",
     "express": "^4.14.1",
+    "image-size": "^0.5.1",
     "node-osascript": "^1.0.4",
-    "camel-case": "^2.0.0",
-    "temp": "^0.8.3"
+    "sharp": "^0.17.2",
+    "temp": "^0.8.3",
+    "tinycolor": "0.0.1",
+    "tinycolor2": "^1.4.1"
   }
 }

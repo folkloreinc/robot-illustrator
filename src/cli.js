@@ -20,7 +20,7 @@ program
     .option('-w, --width <n>', 'The width of the document', parseInt, 800)
     .option('-h, --height <n>', 'The height of the document', parseInt, 600)
     .action(({ width, height }) => {
-        Illustrator.createDocument(width, height);
+        Illustrator.createDocument({ width, height });
     });
 
 program
@@ -31,7 +31,7 @@ program
     .option('-n, --name <n>', 'The name of the text frame', null, 'text')
     .option('-d, --document <n>', 'The name or the index of the document', null, 1)
     .action((text, { x, y, document, name }) => {
-        Illustrator.addText(text, { x, y, name, document });
+        Illustrator.addText({ text, x, y, name, document });
     });
 
 program
@@ -42,7 +42,7 @@ program
     .option('-n, --name <n>', 'The name of the text frame', null, 'text')
     .option('-d, --document <n>', 'The name or the index of the document', null, 1)
     .action((url, { x, y, document, name }) => {
-        Illustrator.addImage(url, { x, y, name, document });
+        Illustrator.addImage({ url, x, y, name, document });
     });
 
 program
@@ -50,7 +50,7 @@ program
     .description('Move an element')
     .option('-d, --document <n>', 'The name or the index of the document', null, 1)
     .action((type, name, x, y, { document }) => {
-        Illustrator.move(type, name, x, y, { document });
+        Illustrator.move({ type, name, x, y, document });
     });
 
 program.parse(process.argv);
