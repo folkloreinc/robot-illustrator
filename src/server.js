@@ -1,14 +1,22 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import kue from 'kue';
+import camelCase from 'camel-case';
+import createDebug from 'debug';
+import Queue from './queue';
+import Illustrator from './index';
+
+const debugServer = createDebug('app:server');
 
 const app = express();
-const queue = kue.createQueue();
 
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false,
 }));
+app.use(bodyParser.json());
+
+const queue = new Queue(data => (
+    Illustrator[data.action](data.parameters)
+));
 
 app.post('/jobs', (req, res) => {
     if (!req.body) {
@@ -17,23 +25,31 @@ app.post('/jobs', (req, res) => {
 
     res.setHeader('Content-Type', 'application/json');
 
-    queue.create('action', {
-        name: req.body.name,
-        data: req.body.data,
-    }).save((err) => {
-        if (err) {
-            return res.send(JSON.stringify({
-                success: false,
-                error: err,
-            }));
-        }
+    const action = camelCase(req.body.action);
+    const parameters = req.body.parameters || null;
+    if (typeof Illustrator[action] === 'undefined') {
         return res.send(JSON.stringify({
+            success: false,
+            error: `Unknown method [${action}]`,
+        }));
+    }
+
+    return queue.addJob({
+        action,
+        parameters,
+    }).then((data) => {
+        res.send(JSON.stringify({
             success: true,
+            data,
+        }));
+    }, (err) => {
+        res.send(JSON.stringify({
+            success: false,
+            error: err,
         }));
     });
-    return res;
 });
 
-app.listen(3000, () => {
-    console.log('Example app listening on port 3000!');
+app.listen(process.env.PORT || 3000, () => {
+    debugServer('Server listening on port 3000!');
 });

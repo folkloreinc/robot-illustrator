@@ -19,10 +19,10 @@
     "build": "npm run clean:lib && npm run compile && npm run copy:scripts",
     "prepublish": "npm run build",
     "start": "node lib/server",
-    "server": "babel-node src/server"
+    "server": "DEBUG=app:* babel-node src/server"
   },
   "bin": {
-    "robot-illustrator" : "./lib/cli.js"
+    "robot-illustrator": "./lib/cli.js"
   },
   "main": "lib/index.js",
   "devDependencies": {
@@ -37,11 +37,12 @@
   "dependencies": {
     "body-parser": "^1.16.1",
     "commander": "^2.9.0",
+    "debug": "^2.6.1",
     "ejs": "^2.5.5",
     "es6-promise": "^4.0.5",
     "express": "^4.14.1",
-    "kue": "^0.11.5",
     "node-osascript": "^1.0.4",
+    "camel-case": "^2.0.0",
     "temp": "^0.8.3"
   }
 }

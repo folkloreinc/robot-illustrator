@@ -2,3 +2,5 @@ node_modules
 *.log
 .tmp
 .sass-cache
+.env
+.access_token
