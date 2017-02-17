@@ -1,13 +1,19 @@
 tell application "Adobe Illustrator"
-    set itemType to <%= type %>
-    set itemName to <%- JSON.stringify(name) %>
     set documentRef to document <%- JSON.stringify(document) %>
-    set container to documentRef
-    set newPosition to {<%= x %>, <%= y %>}
+    set containerRef to documentRef
+    set newPosition to {<%= x %>, <%= -y %>}
     <% if(layer) { %>
     set layerRef to layer <%- JSON.stringify(layer) %> of documentRef
     set the current layer of documentRef to layerRef
-    set container to layerRef
+    set containerRef to layerRef
     <% } %>
-    set the position of itemType itemName of container to newPosition
+
+    <% if(type === 'path item') { %>
+    set startGeoBounds to geometric bounds of <%= type %> <%- JSON.stringify(name) %> of containerRef
+	set {itemLeft, itemTop, itemRight, itemBottom} to startGeoBounds
+    set {positionX, positionY} to  newPosition
+	tell containerRef to translate <%= type %> <%- JSON.stringify(name) %> delta x (positionX - itemLeft) delta y (positionY - itemTop)
+    <% } else { %>
+    set the position of <%= type %> <%- JSON.stringify(name) %> of containerRef to newPosition
+    <% } %>
 end tell
