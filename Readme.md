@@ -2,6 +2,8 @@ Robot Illustrator
 ============
 Control Adobe Illustrator with Node.js using Applescript. This library includes a command-line interface, an HTTP server and is also accessible as a javascript library.
 
+*** WORK IN PROGRESS ***
+
 ## Installation
 
 To use the CLI, install it globally:
