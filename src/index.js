@@ -61,7 +61,6 @@ class Illustrator {
                     document,
                     layer,
                 });
-                console.log(script);
                 return executeScript(script);
             });
     }
